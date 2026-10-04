@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital Web</title>
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+html{
+    scroll-behavior:smooth;
+}
+body{
+    font-family:Arial,sans-serif;
+    background:#f1f7ff;
+    color:#222;
+}
+#bienvenida{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+    background:linear-gradient(135deg,#0066ff,#6a35ff,#d633ff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    color:white;
+}
+.portal{
+    width:90%;
+    max-width:600px;
+    text-align:center;
+    background:rgba(255,255,255,0.15);
+    padding:45px 30px;
+    border-radius:30px;
+    box-shadow:0 10px 35px rgba(0,0,0,0.3);
+    backdrop-filter:blur(10px);
+}
+.portal .logo{
+    font-size:75px;
+    margin-bottom:10px;
+}
+.portal h1{
+    font-size:43px;
+    margin-bottom:10px;
+}
+.portal p{
+    font-size:19px;
+    margin-bottom:25px;
+}
+#datosUsuario{
+    display:none;
+    text-align:left;
+    margin-top:20px;
+}
+#datosUsuario h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+.dato{
+    margin-bottom:15px;
+}
+.dato label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+.dato input{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+.boton-ingresar,
+.boton-continuar{
+    background:white;
+    color:#1769ff;
+    border:none;
+    padding:15px 40px;
+    border-radius:30px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+.boton-ingresar:hover,
+.boton-continuar:hover{
+    transform:scale(1.05);
+}
+.boton-continuar{
+    display:block;
+    margin:20px auto 0;
+}
+#cargando{
+    display:none;
+    margin-top:25px;
+}
+.texto-carga{
+    margin-bottom:10px;
+}
+.barra{
+    width:100%;
+    height:18px;
+    background:rgba(255,255,255,.4);
+    border-radius:20px;
+    overflow:hidden;
+}
+.progreso{
+    width:0%;
+    height:100%;
+    background:white;
+    transition:.1s;
+}
+#porcentaje{
+    margin-top:8px;
+    font-weight:bold;
+}
+#contenidoPrincipal{
+    display:none;
+}
+header{
+    background:linear-gradient(135deg,#0066ff,#6a35ff,#d633ff);
+    color:white;
+    text-align:center;
+    padding:45px 20px;
+}
+header h1{
+    font-size:38px;
+    margin-bottom:8px;
+}
+header p{
+    font-size:19px;
+}
+nav{
+    background:white;
+    padding:15px;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+    box-shadow:0 3px 10px #bbb;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+nav button{
+    border:none;
+    text-decoration:none;
+    background:#1769ff;
+    color:white;
+    padding:12px 25px;
+    border-radius:25px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+nav button:hover{
+    background:#4c20d8;
+    transform:translateY(-3px);
+}
+.pagina{
+    display:none;
+    width:92%;
+    max-width:1100px;
+    margin:35px auto;
+}
+.pagina.activa{
+    display:block;
+}
+.inicio{
+    background:white;
+    padding:45px 30px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 5px 15px #bbb;
+}
+.icono-inicio{
+    font-size:70px;
+    margin-bottom:10px;
+}
+.inicio h2{
+    color:#174ea6;
+    font-size:32px;
+    margin-bottom:15px;
+}
+.inicio p{
+    max-width:850px;
+    margin:auto;
+    color:#555;
+    font-size:18px;
+}
+.explicacion{
+    margin-top:25px;
+    background:#eef6ff;
+    padding:20px;
+    border-radius:15px;
+    border-left:6px solid #1769ff;
+    text-align:left;
+}
+.explicacion strong{
+    color:#1769ff;
+}
+.titulo{
+    text-align:center;
+    color:#174ea6;
+    font-size:30px;
+    margin-bottom:25px;
+}
+.roles{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+.rol{
+    color:white;
+    text-align:center;
+    padding:30px 20px;
+    border-radius:20px;
+    box-shadow:0 5px 12px #aaa;
+    transition:.3s;
+}
+.rol:hover{
+    transform:translateY(-7px);
+}
+.rol .icono{
+    font-size:50px;
+}
+.rol h3{
+    font-size:23px;
+    margin:10px 0;
+}
+.admin{
+    background:linear-gradient(135deg,#ff416c,#ff4b2b);
+}
+.cliente{
+    background:linear-gradient(135deg,#00a8ff,#0066ff);
+}
+.servidor{
+    background:linear-gradient(135deg,#00b894,#00cec9);
+}
+.apartados{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+details{
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 4px 12px #bbb;
+}
+summary{
+    color:white;
+    padding:20px;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    list-style:none;
+}
+summary::-webkit-details-marker{
+    display:none;
+}
+summary::after{
+    content:"+";
+    float:right;
+    font-size:25px;
+}
+details[open] summary::after{
+    content:"-";
+}
+.info1 summary{
+    background:#ff4b5c;
+}
+.info2 summary{
+    background:#087eff;
+}
+.info3 summary{
+    background:#7b2cff;
+}
+.info4 summary{
+    background:#00a884;
+}
+.info5 summary{
+    background:#f39c12;
+}
+.info6 summary{
+    background:#e84393;
+}
+.contenido{
+    padding:20px;
+    background:white;
+}
+.diagrama{
+    background:white;
+    margin-top:30px;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 5px 15px #bbb;
+}
+.diagrama h2{
+    text-align:center;
+    color:#174ea6;
+    margin-bottom:20px;
+}
+.flujo{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+}
+.caja{
+    padding:20px;
+    min-width:150px;
+    border-radius:15px;
+    text-align:center;
+    color:white;
+    font-weight:bold;
+}
+.usuario{
+    background:#ff416c;
+}
+.solicitud{
+    background:#ff9f1c;
+}
+.server{
+    background:#7b2cff;
+}
+.base{
+    background:#00a884;
+}
+.respuesta{
+    background:#087eff;
+}
+.flecha{
+    font-size:30px;
+}
+.formulario{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 5px 15px #bbb;
+}
+.formulario h2{
+    text-align:center;
+    color:#174ea6;
+    margin-bottom:8px;
+}
+.descripcion{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+.form{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+.campo label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+.campo input,
+.campo select,
+.campo textarea{
+    width:100%;
+    padding:14px;
+    border:2px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+}
+.campo textarea{
+    min-height:100px;
+    resize:vertical;
+}
+.completo{
+    grid-column:1 / 3;
+}
+.boton{
+    grid-column:1 / 3;
+    text-align:center;
+}
+button{
+    background:linear-gradient(135deg,#0066ff,#8e2de2);
+    color:white;
+    border:0;
+    padding:15px 35px;
+    border-radius:30px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:hover{
+    background:#4c20d8;
+}
+.regresar{
+    display:block;
+    margin:30px auto 0;
+}
+footer{
+    background:#17202a;
+    color:white;
+    text-align:center;
+    padding:25px;
+    margin-top:40px;
+}
+@media(max-width:750px){
+    header h1{
+        font-size:27px;
+    }
+    .roles{
+        grid-template-columns:1fr;
+    }
+    .apartados{
+        grid-template-columns:1fr;
+    }
+    .form{
+        grid-template-columns:1fr;
+    }
+    .completo,
+    .boton{
+        grid-column:1;
+    }
+    .flecha{
+        transform:rotate(90deg);
+    }
+    .portal h1{
+        font-size:35px;
+    }
+}
+</style>
+</head>
+<body>
+<div id="bienvenida">
+    <div class="portal">
+        <div class="logo">🏥</div>
+        <h1>Hospital Web</h1>
+        <p>Sistema web para consultar y solicitar servicios médicos.</p>
+        <button class="boton-ingresar" onclick="mostrarDatos()">Ingresar</button>
+        <div id="datosUsuario">
+            <h2>👋 Antes de ingresar</h2>
+            <div class="dato">
+                <label>👤 Nombre</label>
+                <input type="text" id="nombreUsuario" placeholder="Escribe tu nombre">
+            </div>
+            <div class="dato">
+                <label>📧 Correo electrónico</label>
+                <input type="email" id="correoUsuario" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="dato">
+                <label>🎂 Edad</label>
+                <input type="number" id="edadUsuario" placeholder="Escribe tu edad" min="1" max="120">
+            </div>
+            <button class="boton-continuar" onclick="iniciarCarga()">Continuar</button>
+        </div>
+        <div id="cargando">
+            <div class="texto-carga">Cargando Hospital Web...</div>
+            <div class="barra"><div class="progreso" id="progreso"></div></div>
+            <div id="porcentaje">0%</div>
+        </div>
+    </div>
+</div>
+<div id="contenidoPrincipal">
+<header>
+    <h1>🏥 Hospital Web</h1>
+    <p>Sistema web para consultar y solicitar servicios médicos</p>
+</header>
+<nav>
+    <button onclick="mostrarPagina('inicio')">🏠 Inicio</button>
+    <button onclick="mostrarPagina('roles')">👥 Roles</button>
+    <button onclick="mostrarPagina('arquitectura')">🏗️ Arquitectura</button>
+    <button onclick="mostrarPagina('cita')">📅 Solicitar cita</button>
+</nav>
+<main>
+<section id="inicio" class="pagina activa">
+    <div class="inicio">
+        <div class="icono-inicio">🏥</div>
+        <h2>¿Qué es Hospital Web?</h2>
+        <p>Hospital Web es una página creada para facilitar el acceso a información y servicios relacionados con la atención médica.</p>
+        <div class="explicacion">
+            <p><strong>¿Para qué sirve?</strong><br>Esta plataforma permite conocer los servicios del hospital, consultar información y realizar solicitudes de citas de una manera sencilla.</p>
+            <br>
+            <p><strong>¿Cómo funciona?</strong><br>El usuario realiza una solicitud desde la página. La información puede ser procesada por un servidor y almacenada en una base de datos.</p>
+        </div>
+    </div>
+</section>
+<section id="roles" class="pagina">
+    <h2 class="titulo">👥 Roles del sistema</h2>
+    <div class="roles">
+        <div class="rol admin">
+            <div class="icono">👨‍💼</div>
+            <h3>Administrador</h3>
+            <p>Gestiona usuarios, citas, médicos y expedientes.</p>
+        </div>
+        <div class="rol cliente">
+            <div class="icono">👤</div>
+            <h3>Cliente</h3>
+            <p>Consulta información y solicita citas médicas.</p>
+        </div>
+        <div class="rol servidor">
+            <div class="icono">🖥️</div>
+            <h3>Servidor</h3>
+            <p>Procesa las solicitudes y administra la información del sistema.</p>
+        </div>
+    </div>
+    <button class="regresar" onclick="mostrarPagina('inicio')">← Regresar al inicio</button>
+</section>
+<section id="arquitectura" class="pagina">
+    <h2 class="titulo">🏗️ Arquitectura del sistema</h2>
+    <div class="apartados">
+        <details class="info1">
+            <summary>👤 Usuario / Cliente</summary>
+            <div class="contenido"><p>Es la persona que utiliza la página desde un celular, computadora o tablet.</p></div>
+        </details>
+        <details class="info2">
+            <summary>📤 Solicitud</summary>
+            <div class="contenido"><p>Es la petición que realiza el usuario, por ejemplo solicitar una cita médica.</p></div>
+        </details>
+        <details class="info3">
+            <summary>🖥️ Servidor</summary>
+            <div class="contenido"><p>Recibe las solicitudes y procesa la información del sistema.</p></div>
+        </details>
+        <details class="info4">
+            <summary>📥 Respuesta</summary>
+            <div class="contenido"><p>Es la información que el servidor devuelve al usuario.</p></div>
+        </details>
+        <details class="info5">
+            <summary>🗄️ Base de datos</summary>
+            <div class="contenido"><p>Contiene información de pacientes, médicos, citas y expedientes.</p></div>
+        </details>
+        <details class="info6">
+            <summary>🔄 Flujo del sistema</summary>
+            <div class="contenido"><p>Cliente → Solicitud → Servidor → Base de datos → Respuesta → Cliente.</p></div>
+        </details>
+    </div>
+    <div class="diagrama">
+        <h2>🔄 Flujo Cliente-Servidor</h2>
+        <div class="flujo">
+            <div class="caja usuario">👤<br>Cliente</div>
+            <div class="flecha">→</div>
+            <div class="caja solicitud">📤<br>Solicitud</div>
+            <div class="flecha">→</div>
+            <div class="caja server">🖥️<br>Servidor</div>
+            <div class="flecha">→</div>
+            <div class="caja base">🗄️<br>Base de datos</div>
+            <div class="flecha">→</div>
+            <div class="caja respuesta">📥<br>Respuesta</div>
+        </div>
+    </div>
+    <button class="regresar" onclick="mostrarPagina('inicio')">← Regresar al inicio</button>
+</section>
+<section id="cita" class="pagina">
+    <div class="formulario">
+        <h2>📅 Solicitar una cita</h2>
+        <p class="descripcion">Completa los datos de forma sencilla.</p>
+        <form class="form" onsubmit="enviarSolicitud(event)">
+            <div class="campo">
+                <label>Nombre completo</label>
+                <input type="text" placeholder="Escribe tu nombre" required>
+            </div>
+            <div class="campo">
+                <label>Número de expediente</label>
+                <input type="text" placeholder="Número de expediente" required>
+            </div>
+            <div class="campo">
+                <label>Especialidad</label>
+                <select required>
+                    <option value="">Selecciona una opción</option>
+                    <option>Medicina general</option>
+                    <option>Pediatría</option>
+                    <option>Cardiología</option>
+                    <option>Dermatología</option>
+                    <option>Ginecología</option>
+                </select>
+            </div>
+            <div class="campo">
+                <label>Fecha</label>
+                <input type="date" required>
+            </div>
+            <div class="campo">
+                <label>Hora</label>
+                <input type="time" required>
+            </div>
+            <div class="campo">
+                <label>Teléfono</label>
+                <input type="tel" placeholder="Número de teléfono">
+            </div>
+            <div class="campo completo">
+                <label>Motivo de la consulta</label>
+                <textarea placeholder="Escribe brevemente el motivo"></textarea>
+            </div>
+            <div class="boton">
+                <button type="submit">📤 Enviar solicitud</button>
+            </div>
+        </form>
+    </div>
+    <button class="regresar" onclick="mostrarPagina('inicio')">← Regresar al inicio</button>
+</section>
+</main>
+<footer>
+    <p>🏥 Hospital Web</p>
+    <p>Proyecto de programación</p>
+</footer>
+</div>
+<script>
+function mostrarDatos(){
+    document.querySelector(".boton-ingresar").style.display="none";
+    document.getElementById("datosUsuario").style.display="block";
+}
+function iniciarCarga(){
+    let nombre = document.getElementById("nombreUsuario").value.trim();
+    let correo = document.getElementById("correoUsuario").value.trim();
+    let edad = document.getElementById("edadUsuario").value;
+    if(nombre === "" || correo === "" || edad === ""){
+        alert("Por favor completa tu nombre, correo y edad.");
+        return;
+    }
+    if(edad < 1 || edad > 120){
+        alert("Por favor escribe una edad válida.");
+        return;
+    }
+    document.getElementById("datosUsuario").style.display="none";
+    document.getElementById("cargando").style.display="block";
+    let progreso=0;
+    let barra=document.getElementById("progreso");
+    let porcentaje=document.getElementById("porcentaje");
+    let carga=setInterval(function(){
+        progreso++;
+        barra.style.width=progreso+"%";
+        porcentaje.textContent=progreso+"%";
+        if(progreso>=100){
+            clearInterval(carga);
+            setTimeout(function(){
+                document.getElementById("bienvenida").style.display="none";
+                document.getElementById("contenidoPrincipal").style.display="block";
+                mostrarPagina("inicio");
+            },500);
+        }
+    },30);
+}
+function mostrarPagina(pagina){
+    let paginas=document.querySelectorAll(".pagina");
+    paginas.forEach(function(elemento){
+        elemento.classList.remove("activa");
+    });
+    document.getElementById(pagina).classList.add("activa");
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+function enviarSolicitud(event){
+    event.preventDefault();
+    alert("✅ Solicitud enviada correctamente.\n\nLa información fue registrada en Hospital Web.");
+}
+</script>
+</body>
+</html>
