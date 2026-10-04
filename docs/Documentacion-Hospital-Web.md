@@ -17,7 +17,7 @@
 11. Formulario de Solicitud de Cita
 12. Funcionalidad JavaScript
 13. Guía de Uso
-14. Capturas de Pantalla (PENDIENTE)
+14. Capturas de Pantalla
 15. Conclusión
 16. Recomendaciones
 
@@ -104,6 +104,11 @@ Pantalla inicial con botón Ingresar.
 Solicitud de Nombre, Correo electrónico y Edad con botón Continuar.
 
 ![Antes de ingresar](../imgs/Captura%20de%20pantalla%202026-10-03%20230304.png)
+
+### 14.5 Repositorio publicado en GitHub
+Vista del repositorio `interfaz-construyete` ya publicado con commit `first commit`, carpetas `docs`, `imgs`, archivos `README.md` e `index.html`.
+
+![Repo publicado](../imgs/Captura%20de%20pantalla%202026-10-03%20231420.png)
 
 ## 15. Conclusión
 Interfaz completa, funcional y responsive, lista y subida a GitHub, con evidencia visual incluida.
